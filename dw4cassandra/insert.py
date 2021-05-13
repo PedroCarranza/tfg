@@ -2,7 +2,7 @@ import csv
 from dw4cassandra.Product import Product
 from cassandra.cluster import Cluster
 
-with open('../csv/olist_products_dataset.csv', newline='') as csvProd:
+with open('csv/olist_products_dataset.csv', newline='') as csvProd:
     readerProd = csv.reader(csvProd, delimiter=',', quotechar='"')
 
     cluster = Cluster()
