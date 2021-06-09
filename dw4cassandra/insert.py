@@ -18,7 +18,7 @@ with open('../csv/olist_products_dataset.csv') as csvProd:
     readerProd.next()
 
     for row in readerProd:
-        product = Product(id=long(row[0]),
+        product = Product(id=int(row[0], 16),
                           categoryName=row[1],
                           nameLength=(int(row[2]) if row[2] != '' else None),
                           descriptionLength=(int(row[3]) if row[3] != '' else None),
@@ -35,7 +35,7 @@ with open('../csv/olist_customers_dataset.csv') as csvCus:
     readerCus.next()
 
     for row in readerCus:
-        customer = Customer(uniqueId=long(row[1]),
+        customer = Customer(uniqueId=int(row[1], 16),
                             zip_code_prefix=(int(row[2]) if row[2] != '' else None),
                             city=row[3],
                             state=row[4])
@@ -47,7 +47,7 @@ with open('../csv/olist_sellers_dataset.csv') as csvSel:
     readerSel.next()
 
     for row in readerSel:
-        seller = Seller(id=long(row[0]),
+        seller = Seller(id=int(row[0], 16),
                         zip_code_prefix=(int(row[2]) if row[1] != '' else None),
                         city=row[2],
                         state=row[3])
@@ -59,7 +59,7 @@ with open('../csv/olist_order_reviews_dataset.csv') as csvRev:
     readerRev.next()
 
     for row in readerRev:
-        review = Review(id=long(row[0]),
+        review = Review(id=int(row[0], 16),
                         score=(int(row[2]) if row[1] != '' else None),
                         comment_title=row[2],
                         creation_date=row[3],

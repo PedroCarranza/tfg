@@ -7,7 +7,7 @@ class Product(Model):
     __keyspace__ = 'olist'
     __table_name__ = 'product'
     __connection__ = 'cluster1'
-    id = columns.BigInt(primary_key=True)
+    id = columns.VarInt(primary_key=True)
     categoryName = columns.Text()
     nameLength = columns.Integer()
     descriptionLength = columns.Integer()

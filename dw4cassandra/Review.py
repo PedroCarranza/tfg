@@ -7,7 +7,7 @@ class Review(Model):
     __keyspace__ = 'olist'
     __table_name__ = 'review'
     __connection__ = 'cluster1'
-    id = columns.BigInt(primary_key=True)
+    id = columns.VarInt(primary_key=True)
     score = columns.Integer()
     comment_title = columns.Text()
     creation_date = columns.Text()
