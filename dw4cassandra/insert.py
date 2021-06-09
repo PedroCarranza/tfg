@@ -48,7 +48,7 @@ with open('../csv/olist_sellers_dataset.csv') as csvSel:
 
     for row in readerSel:
         seller = Seller(id=int(row[0], 16),
-                        zip_code_prefix=(int(row[2]) if row[1] != '' else None),
+                        zip_code_prefix=(int(row[1]) if row[1] != '' else None),
                         city=row[2],
                         state=row[3])
         seller.save()
@@ -60,7 +60,7 @@ with open('../csv/olist_order_reviews_dataset.csv') as csvRev:
 
     for row in readerRev:
         review = Review(id=int(row[0], 16),
-                        score=(int(row[2]) if row[1] != '' else None),
+                        score=(int(row[1]) if row[1] != '' else None),
                         comment_title=row[2],
                         creation_date=row[3],
                         answer_timestamp=row[4])
