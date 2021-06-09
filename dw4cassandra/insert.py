@@ -60,8 +60,9 @@ with open('../csv/olist_order_reviews_dataset.csv') as csvRev:
 
     for row in readerRev:
         review = Review(id=int(row[0], 16),
-                        score=(int(row[1]) if row[1] != '' else None),
-                        comment_title=row[2],
-                        creation_date=row[3],
-                        answer_timestamp=row[4])
+                        score=(int(row[2]) if row[2] != '' else None),
+                        comment_title=row[3],
+                        comment_message=row[4],
+                        creation_date=row[5],
+                        answer_timestamp=row[6])
         review.save()

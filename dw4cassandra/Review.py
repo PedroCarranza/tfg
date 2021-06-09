@@ -10,8 +10,9 @@ class Review(Model):
     id = columns.VarInt(primary_key=True)
     score = columns.Integer()
     comment_title = columns.Text()
+    comment_message = columns.Text()
     creation_date = columns.Text()
-    answer_timestamp = columns.Date()
+    answer_timestamp = columns.Text()
 
 
 sync_table(Review)
