@@ -5,6 +5,8 @@ from cassandra.cqlengine import management
 
 
 class ProductUserType(UserType):
+    idProd = columns.VarInt(primary_key=True)
+    categoryName = columns.Text(primary_key=True)
     nameLength = columns.Integer()
     descriptionLength = columns.Integer()
     photosTotal = columns.Integer()
@@ -19,9 +21,9 @@ class Product(Model):
     __keyspace__ = 'olist'
     __table_name__ = 'product'
     __connection__ = 'cluster1'
-    id = columns.VarInt(primary_key=True)
-    categoryName = columns.Text(primary_key=True)
+    id = columns.UUID(primary_key=True)
     data = columns.UserDefinedType(ProductUserType)
+
 
 
 management.sync_table(Product)
