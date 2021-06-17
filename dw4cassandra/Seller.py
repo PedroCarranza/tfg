@@ -1,4 +1,5 @@
 from cassandra.cqlengine.models import Model
+from cassandra.cqlengine.usertype import UserType
 from cassandra.cqlengine import columns
 from cassandra.cqlengine.management import sync_table
 

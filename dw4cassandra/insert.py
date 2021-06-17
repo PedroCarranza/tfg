@@ -1,17 +1,24 @@
 import csv
 import os
 from cassandra.cqlengine import connection
+from cassandra.cluster import Cluster
+from cassandra.cqlengine.management import sync_table
+from datetime import datetime
 
 if os.getenv('CQLENG_ALLOW_SCHEMA_MANAGEMENT') is None:
     os.environ['CQLENG_ALLOW_SCHEMA_MANAGEMENT'] = '1'
 
 connection.register_connection('cluster1', ['127.0.0.1'])
 
+from dw4cassandra.Sale import Sale
 from dw4cassandra.Product import Product
 from dw4cassandra.Customer import Customer
 from dw4cassandra.Seller import Seller
-from dw4cassandra.Review import Review
+#from dw4cassandra.Review import Review
 
+#   session = Cluster.connect(keyspace='olist')
+
+"""
 with open('../csv/olist_products_dataset.csv') as csvProd:
     readerProd = csv.reader(csvProd, delimiter=',', quotechar='"')
 
@@ -29,6 +36,22 @@ with open('../csv/olist_products_dataset.csv') as csvProd:
                           widthCm=(int(row[8]) if row[8] != '' else None))
         product.save()
 
+print("Acabei de inserir no product")
+
+
+with open('../csv/product_category_name_translation.csv') as csvTrans:
+    readerTrans = csv.reader(csvTrans, delimiter=',', quotechar='"')
+
+    readerTrans.next()
+
+    for row in readerTrans:
+        for product in Product.objects.filter(categoryName=row[0]).allow_filtering():
+            product.categoryNameEnglish = row[1]
+            product.update()
+
+print("Acabei de alterar o product")
+
+
 with open('../csv/olist_customers_dataset.csv') as csvCus:
     readerCus = csv.reader(csvCus, delimiter=',', quotechar='"')
 
@@ -40,6 +63,8 @@ with open('../csv/olist_customers_dataset.csv') as csvCus:
                             city=row[3],
                             state=row[4])
         customer.save()
+
+print("Acabei de inserir no customer")
 
 with open('../csv/olist_sellers_dataset.csv') as csvSel:
     readerSel = csv.reader(csvSel, delimiter=',', quotechar='"')
@@ -53,6 +78,25 @@ with open('../csv/olist_sellers_dataset.csv') as csvSel:
                         state=row[3])
         seller.save()
 
+print("Acabei de inserir no seller")
+
+"""
+with open('../csv/olist_order_items_dataset.csv') as csvItens:
+    readerItem = csv.reader(csvItens, delimiter=',', quotechar='"')
+
+    readerItem.next()
+
+    for row in readerItem:
+        product = Product.get(id=row[2])
+#        seller = Seller.get(id=row[3])
+        sale = Sale(price=float(row[5]) if row[5] != '' else None,
+                    freightValue=float(row[6]) if row[5] != '' else None,
+                    shippingLimitDate=datetime.strptime(row[4], '%y-%m-%d %H:%M:%S'),
+                    product=product)
+
+print("Acabei de inserir no sale")
+
+"""
 with open('../csv/olist_order_reviews_dataset.csv') as csvRev:
     readerRev = csv.reader(csvRev, delimiter=',', quotechar='"')
 
@@ -66,3 +110,4 @@ with open('../csv/olist_order_reviews_dataset.csv') as csvRev:
                         creation_date=row[5],
                         answer_timestamp=row[6])
         review.save()
+"""
