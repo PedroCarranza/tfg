@@ -1,5 +1,7 @@
 import csv
 import os
+import uuid
+
 from cassandra.cqlengine import connection
 from cassandra.cluster import Cluster
 from cassandra.cqlengine.management import sync_table
@@ -18,14 +20,14 @@ from dw4cassandra.Seller import Seller
 
 #   session = Cluster.connect(keyspace='olist')
 
-
+"""
 with open('../csv/olist_products_dataset.csv') as csvProd:
     readerProd = csv.reader(csvProd, delimiter=',', quotechar='"')
 
     readerProd.next()
 
     for row in readerProd:
-        product = Product(idProd=int(row[0], 16),
+        product = Product(id=int(row[0], 16),
                           categoryName=row[1],
                           nameLength=(int(row[2]) if row[2] != '' else None),
                           descriptionLength=(int(row[3]) if row[3] != '' else None),
@@ -64,7 +66,7 @@ with open('../csv/olist_customers_dataset.csv') as csvCus:
                             state=row[4])
         customer.save()
 
-print("Acabei de inserir no customer")
+print("Acabei de inserir no costumer")
 
 with open('../csv/olist_sellers_dataset.csv') as csvSel:
     readerSel = csv.reader(csvSel, delimiter=',', quotechar='"')
@@ -79,7 +81,7 @@ with open('../csv/olist_sellers_dataset.csv') as csvSel:
         seller.save()
 
 print("Acabei de inserir no seller")
-
+"""
 
 with open('../csv/olist_order_items_dataset.csv') as csvItens:
     readerItem = csv.reader(csvItens, delimiter=',', quotechar='"')
@@ -87,13 +89,15 @@ with open('../csv/olist_order_items_dataset.csv') as csvItens:
     readerItem.next()
 
     for row in readerItem:
-        product = Product.get(idProd=int(row[2], 16))
-        print(row[4])
+        product = Product.get(id=int(row[2], 16))
 #        seller = Seller.get(id=row[3])
-        sale = Sale(price=float(row[5]) if row[5] != '' else None,
+        sale = Sale(id=uuid.uuid4(),
+                    price=float(row[5]) if row[5] != '' else None,
                     freightValue=float(row[6]) if row[5] != '' else None,
                     shippingLimitDate=datetime.strptime(row[4], "%Y-%m-%d %H:%M:%S"),
-                    product=product.data())
+                    product=product.data)
+
+        sale.save()
 
 print("Acabei de inserir no sale")
 
