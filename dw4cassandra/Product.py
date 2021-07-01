@@ -5,22 +5,24 @@ from cassandra.cqlengine import management
 
 
 class ProductUserType(UserType):
-    nameLength = columns.Integer()
-    descriptionLength = columns.Integer()
-    photosTotal = columns.Integer()
-    weightGrams = columns.Integer()
-    lengthCm = columns.Integer()
-    heightCm = columns.Integer()
-    widthCm = columns.Integer()
-    categoryNameEnglish = columns.Text()
+    __type_name__ = 'productUserType'
+    id = columns.VarInt(primary_key=True)
+    categoryname = columns.Text(primary_key=True)
+    namelength = columns.Integer()
+    descriptionlength = columns.Integer()
+    photostotal = columns.Integer()
+    weightgrams = columns.Integer()
+    lengthcm = columns.Integer()
+    heightcm = columns.Integer()
+    widthcm = columns.Integer()
+    categorynameenglish = columns.Text()
 
 
 class Product(Model):
     __keyspace__ = 'olist'
     __table_name__ = 'product'
     __connection__ = 'cluster1'
-    id = columns.VarInt(primary_key=True)
-    categoryName = columns.Text(primary_key=True)
+    productId = columns.UUID(primary_key=True)
     data = columns.UserDefinedType(ProductUserType)
 
 
