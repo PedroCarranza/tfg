@@ -1,7 +1,6 @@
 from cassandra.cqlengine.models import Model
 from cassandra.cqlengine import columns
 from cassandra.cqlengine.management import sync_table
-from dw4cassandra.Product import ProductUserType
 
 
 class Sale(Model):
@@ -14,13 +13,13 @@ class Sale(Model):
     hoursToApproval = columns.Integer()
     hoursAtSeller = columns.Integer()
     hoursAtCarrier = columns.Integer()
-    shippingLimitDate = columns.Date()
-#   costumer = columns.UserDefinedType(Customer)
-#   seller = columns.UserDefinedType(Seller)
-#   review = columns.UserDefinedType(Review)
-#   order = columns.UserDefinedType(Order)
-    product = columns.UserDefinedType(ProductUserType)
-#   payment = columns.UserDefinedType(Payment)
+    shippingLimitDate = columns.DateTime()
+    customerId = columns.VarInt()
+    sellerId = columns.VarInt()
+    reviewId = columns.VarInt()
+    orderId = columns.VarInt()
+    productId = columns.VarInt()
+    paymentId = columns.VarInt()
 
 
 sync_table(Sale)
