@@ -8,15 +8,15 @@ class Product(Model):
     __table_name__ = 'product'
     __connection__ = 'cluster1'
     id = columns.VarInt(primary_key=True)
-    categoryName = columns.Text(primary_key=True)
-    nameLength = columns.Integer()
-    descriptionLength = columns.Integer()
-    photosTotal = columns.Integer()
-    weightGrams = columns.Integer()
-    lengthCm = columns.Integer()
-    heightCm = columns.Integer()
-    widthCm = columns.Integer()
-    categoryNameEnglish = columns.Text()
+    category_name = columns.Text(primary_key=True)
+    name_length = columns.Integer()
+    description_length = columns.Integer()
+    photos_total = columns.Integer()
+    weight_grams = columns.Integer()
+    length_cm = columns.Integer()
+    height_cm = columns.Integer()
+    width_cm = columns.Integer()
+    category_name_english = columns.Text()
 
 
 management.sync_table(Product)

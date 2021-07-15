@@ -3,17 +3,17 @@ from cassandra.cqlengine import columns
 from cassandra.cqlengine.management import sync_table
 
 
-class Order(Model):
+class OrderSales(Model):
     __keyspace__ = 'olist'
-    __table_name__ = 'order'
+    __table_name__ = 'ordersales'
     __connection__ = 'cluster1'
     id = columns.VarInt(primary_key=True)
     status = columns.Text()
     purchase = columns.DateTime()
-    approvedAt = columns.DateTime()
-    deliveredCarrier = columns.DateTime()
-    deliveredCustomer = columns.DateTime()
-    estimatedDelivery = columns.Date()
+    approved_at = columns.DateTime()
+    delivered_carrier = columns.DateTime()
+    delivered_customer = columns.DateTime()
+    estimated_delivery = columns.Date()
 
 
-sync_table(Order)
+sync_table(OrderSales)

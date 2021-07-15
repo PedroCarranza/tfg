@@ -16,7 +16,8 @@ from dw4cassandra.Product import Product
 from dw4cassandra.Customer import Customer
 from dw4cassandra.Seller import Seller
 from dw4cassandra.Review import Review
-from dw4cassandra.Order import Order
+from dw4cassandra.OrderSales import OrderSales
+from dw4cassandra.Payment import Payment
 
 #   session = Cluster.connect(keyspace='olist')
 
@@ -27,17 +28,17 @@ with open('../csv/olist_products_dataset.csv') as csvProd:
 
     cont = 0
     for row in readerProd:
-        product = Product(productId=uuid.uuid4(),
+        product = Product(product_id=uuid.uuid4(),
                             id=int(row[0], 16),
-                            categoryName=row[1],
-                            nameLength=(int(row[2]) if row[2] != '' else None),
-                            descriptionLength=(int(row[3]) if row[3] != '' else None),
-                            photosTotal=(int(row[4]) if row[4] != '' else None),
-                            weightGrams=(int(row[5]) if row[5] != '' else None),
-                            lengthCm=(int(row[6]) if row[6] != '' else None),
-                            heightCm=(int(row[7]) if row[7] != '' else None),
-                            widthCm=(int(row[8]) if row[8] != '' else None),
-                            categoryNameEnglish='')
+                            category_name=row[1],
+                            name_length=(int(row[2]) if row[2] != '' else None),
+                            description_length=(int(row[3]) if row[3] != '' else None),
+                            photos_total=(int(row[4]) if row[4] != '' else None),
+                            weight_grams=(int(row[5]) if row[5] != '' else None),
+                            length_cm=(int(row[6]) if row[6] != '' else None),
+                            height_cm=(int(row[7]) if row[7] != '' else None),
+                            width_cm=(int(row[8]) if row[8] != '' else None),
+                            category_name_english='')
         product.save()
         cont += 1
         if cont >= 100:
@@ -51,7 +52,7 @@ with open('../csv/product_category_name_translation.csv') as csvTrans:
     readerTrans.next()
 
     for row in readerTrans:
-        for product in Product.objects.filter(categoryName=row[0]).allow_filtering():
+        for product in Product.objects.filter(category_name=row[0]).allow_filtering():
             product.categoryNameEnglish = row[1]
             product.update()
 
@@ -64,7 +65,7 @@ with open('../csv/olist_customers_dataset.csv') as csvCus:
 
     cont = 0
     for row in readerCus:
-        customer = Customer(uniqueId=int(row[1], 16),
+        customer = Customer(unique_id=int(row[1], 16),
                             zip_code_prefix=(int(row[2]) if row[2] != '' else None),
                             city=row[3],
                             state=row[4])
@@ -93,6 +94,65 @@ with open('../csv/olist_sellers_dataset.csv') as csvSel:
 
 print("Acabei de inserir no seller")
 
+with open('../csv/olist_order_items_dataset.csv') as csvItens:
+    readerItem = csv.reader(csvItens, delimiter=',', quotechar='"')
+
+    readerItem.next()
+
+    cont = 0
+    for row in readerItem:
+        sale = Sale(id=uuid.uuid4(),
+                    price=float(row[5]) if row[5] != '' else None,
+                    freight_value=float(row[6]) if row[6] != '' else None,
+                    shipping_limit_date=datetime.strptime(row[4], "%Y-%m-%d %H:%M:%S"),
+                    order_id=int(row[0], 16),
+                    seller_id=int(row[3], 16),
+                    product_id=int(row[2], 16))
+        sale.save()
+        cont += 1
+        if cont >= 1000:
+            break
+
+print("Acabei de inserir no sale")
+
+with open('../csv/olist_orders_dataset.csv') as csvOrd:
+    readerOder = csv.reader(csvOrd, delimiter=',', quotechar='"')
+
+    readerOder.next()
+
+    cont = 0
+    for row in readerOder:
+        purchase = datetime.strptime(row[3], "%Y-%m-%d %H:%M:%S") if row[3] != '' else None
+        approved_at = datetime.strptime(row[4], "%Y-%m-%d %H:%M:%S") if row[4] != '' else None
+        delivered_carrier = datetime.strptime(row[5], "%Y-%m-%d %H:%M:%S") if row[5] != '' else None
+        delivered_customer = datetime.strptime(row[6], "%Y-%m-%d %H:%M:%S") if row[6] != '' else None
+        estimated_delivery = datetime.strptime(row[7], "%Y-%m-%d %H:%M:%S") if row[7] != '' else None
+
+        sales = Sale.objects.filter(order_id=int(row[0], 16)).allow_filtering()
+
+        for sale in sales:
+            sale.customer_id = int(row[1], 16)
+            sale.hours_to_approval = int((approved_at - purchase).total_seconds() / 3600)
+            sale.hours_at_seller = int((delivered_carrier - approved_at).total_seconds() / 3600)
+            sale.hours_at_carrier = int((estimated_delivery - delivered_carrier).total_seconds() / 3600)
+            sale.update()
+
+        #if len(sales) > 0:
+        #    print("%d %d" % (len(sales), int(row[0], 16)))
+
+        orderSales = OrderSales(id=int(row[0], 16),
+                        status=row[2],
+                        purchase=purchase,
+                        approved_at=approved_at,
+                        delivered_carrier=delivered_carrier,
+                        delivered_customer=delivered_customer,
+                        estimated_delivery=estimated_delivery)
+        orderSales.save()
+        cont += 1
+        if cont >= 1000:
+            break
+
+print("Acabei de inserir no OrderSale e alterar o Sale")
 
 with open('../csv/olist_order_reviews_dataset.csv') as csvRev:
     readerRev = csv.reader(csvRev, delimiter=',', quotechar='"')
@@ -108,63 +168,43 @@ with open('../csv/olist_order_reviews_dataset.csv') as csvRev:
                         creation_date=row[5],
                         answer_timestamp=row[6])
         review.save()
+
+        sales = Sale.objects.filter(order_id=int(row[1], 16)).allow_filtering()
+
+        for sale in sales:
+            sale.review_id = review.id
+            sale.update()
+
         cont += 1
         if cont >= 100:
             break
 
-print("Acabei de inserir no review")
+print("Acabei de inserir no review e alterar o Sale")
 
-with open('../csv/olist_order_items_dataset.csv') as csvItens:
-    readerItem = csv.reader(csvItens, delimiter=',', quotechar='"')
+with open('../csv/olist_order_payments_dataset.csv') as csvPay:
+    readerPay = csv.reader(csvPay, delimiter=',', quotechar='"')
 
-    readerItem.next()
+    readerPay.next()
 
     cont = 0
-    for row in readerItem:
-        sale = Sale(id=uuid.uuid4(),
-                    price=float(row[5]) if row[5] != '' else None,
-                    freightValue=float(row[6]) if row[6] != '' else None,
-                    shippingLimitDate=datetime.strptime(row[4], "%Y-%m-%d %H:%M:%S"),
-                    orderId=int(row[0], 16),
-                    sellerId=int(row[3], 16),
-                    productId=int(row[2], 16))
-        sale.save()
+    for row in readerPay:
+        payment = Payment(id=uuid.uuid4(),
+                          payment_type=row[2],
+                          payment_installments=(int(row[3]) if row[3] != '' else None),
+                          payment_value=(float(row[4]) if row[4] != '' else None))
+        payment.save()
+
+        sales = Sale.objects.filter(order_id=int(row[0], 16)).allow_filtering()
+
+        for sale in sales:
+            sale.payment_id = payment.id
+            sale.update()
+
+        #if len(sales) > 0:
+        #    print("%d %d" % (len(sales), int(row[0], 16)))
+
         cont += 1
         if cont >= 100:
             break
 
-print("Acabei de inserir no sale")
-
-with open('../csv/olist_orders_dataset.csv') as csvOrd:
-    readerOder = csv.reader(csvOrd, delimiter=',', quotechar='"')
-
-    readerOder.next()
-
-    cont = 0
-    for row in readerOder:
-        purchase = datetime.strptime(row[3], "%Y-%m-%d %H:%M:%S") if row[3] != '' else None
-        approvedAt = datetime.strptime(row[4], "%Y-%m-%d %H:%M:%S") if row[4] != '' else None
-        deliveredCarrier = datetime.strptime(row[5], "%Y-%m-%d %H:%M:%S") if row[5] != '' else None
-        deliveredCustomer = datetime.strptime(row[6], "%Y-%m-%d %H:%M:%S") if row[6] != '' else None
-        estimatedDelivery = datetime.strptime(row[7], "%Y-%m-%d %H:%M:%S") if row[7] != '' else None
-
-        for sales in Sale.objects.filter(orderId=int(row[0], 16)).allow_filtering():
-            sales.customerId = int(row[1], 16)
-            sales.hoursToApproval = int((approvedAt - purchase).total_seconds / 3600)
-            sales.hoursAtSeller = int((deliveredCarrier - approvedAt).total_seconds / 3600)
-            sales.hoursAtCarrier = int((deliveredCustomer - deliveredCarrier).total_seconds / 3600)
-            sales.update()
-
-        order = Order(id=int(row[0], 16),
-                        status=row[2],
-                        purchase=purchase,
-                        approvedAt=approvedAt,
-                        deliveredCarrier=deliveredCarrier,
-                        deliveredCustomer=deliveredCustomer,
-                        estimatedDelivery=estimatedDelivery)
-        order.save()
-        cont += 1
-        if cont >= 100:
-            break
-
-print("Acabei de alterar o sale e inserir no Order")
+print("Acabei de inserir no payment e alterar o Sale")
