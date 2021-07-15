@@ -1,32 +1,28 @@
 import csv
 import os
 import uuid
+from datetime import datetime
 
 from cassandra.cqlengine import connection
-from cassandra.cluster import Cluster
-from datetime import datetime
 
 if os.getenv('CQLENG_ALLOW_SCHEMA_MANAGEMENT') is None:
     os.environ['CQLENG_ALLOW_SCHEMA_MANAGEMENT'] = '1'
 
 connection.register_connection('cluster1', ['127.0.0.1'])
 
-from dw4cassandra.Sale import Sale
-from dw4cassandra.Product import Product
-from dw4cassandra.Customer import Customer
-from dw4cassandra.Seller import Seller
-from dw4cassandra.Review import Review
-from dw4cassandra.OrderSales import OrderSales
-from dw4cassandra.Payment import Payment
-
-#   session = Cluster.connect(keyspace='olist')
+from Sale import Sale
+from Product import Product
+from Customer import Customer
+from Seller import Seller
+from Review import Review
+from OrderSales import OrderSales
+from Payment import Payment
 
 with open('../csv/olist_products_dataset.csv') as csvProd:
     readerProd = csv.reader(csvProd, delimiter=',', quotechar='"')
 
     readerProd.next()
 
-    cont = 0
     for row in readerProd:
         product = Product(product_id=uuid.uuid4(),
                             id=int(row[0], 16),
@@ -40,9 +36,6 @@ with open('../csv/olist_products_dataset.csv') as csvProd:
                             width_cm=(int(row[8]) if row[8] != '' else None),
                             category_name_english='')
         product.save()
-        cont += 1
-        if cont >= 100:
-            break
 
 print("Acabei de inserir no product")
 
@@ -63,16 +56,12 @@ with open('../csv/olist_customers_dataset.csv') as csvCus:
 
     readerCus.next()
 
-    cont = 0
     for row in readerCus:
         customer = Customer(unique_id=int(row[1], 16),
                             zip_code_prefix=(int(row[2]) if row[2] != '' else None),
                             city=row[3],
                             state=row[4])
         customer.save()
-        cont += 1
-        if cont >= 100:
-            break
 
 print("Acabei de inserir no customer")
 
@@ -81,16 +70,12 @@ with open('../csv/olist_sellers_dataset.csv') as csvSel:
 
     readerSel.next()
 
-    cont = 0
     for row in readerSel:
         seller = Seller(id=int(row[0], 16),
                         zip_code_prefix=(int(row[1]) if row[1] != '' else None),
                         city=row[2],
                         state=row[3])
         seller.save()
-        cont += 1
-        if cont >= 100:
-            break
 
 print("Acabei de inserir no seller")
 
@@ -99,7 +84,6 @@ with open('../csv/olist_order_items_dataset.csv') as csvItens:
 
     readerItem.next()
 
-    cont = 0
     for row in readerItem:
         sale = Sale(id=uuid.uuid4(),
                     price=float(row[5]) if row[5] != '' else None,
@@ -109,9 +93,6 @@ with open('../csv/olist_order_items_dataset.csv') as csvItens:
                     seller_id=int(row[3], 16),
                     product_id=int(row[2], 16))
         sale.save()
-        cont += 1
-        if cont >= 1000:
-            break
 
 print("Acabei de inserir no sale")
 
@@ -120,7 +101,6 @@ with open('../csv/olist_orders_dataset.csv') as csvOrd:
 
     readerOder.next()
 
-    cont = 0
     for row in readerOder:
         purchase = datetime.strptime(row[3], "%Y-%m-%d %H:%M:%S") if row[3] != '' else None
         approved_at = datetime.strptime(row[4], "%Y-%m-%d %H:%M:%S") if row[4] != '' else None
@@ -148,9 +128,6 @@ with open('../csv/olist_orders_dataset.csv') as csvOrd:
                         delivered_customer=delivered_customer,
                         estimated_delivery=estimated_delivery)
         orderSales.save()
-        cont += 1
-        if cont >= 1000:
-            break
 
 print("Acabei de inserir no OrderSale e alterar o Sale")
 
@@ -159,7 +136,6 @@ with open('../csv/olist_order_reviews_dataset.csv') as csvRev:
 
     readerRev.next()
 
-    cont = 0
     for row in readerRev:
         review = Review(id=int(row[0], 16),
                         score=(int(row[2]) if row[2] != '' else None),
@@ -175,10 +151,6 @@ with open('../csv/olist_order_reviews_dataset.csv') as csvRev:
             sale.review_id = review.id
             sale.update()
 
-        cont += 1
-        if cont >= 100:
-            break
-
 print("Acabei de inserir no review e alterar o Sale")
 
 with open('../csv/olist_order_payments_dataset.csv') as csvPay:
@@ -186,7 +158,6 @@ with open('../csv/olist_order_payments_dataset.csv') as csvPay:
 
     readerPay.next()
 
-    cont = 0
     for row in readerPay:
         payment = Payment(id=uuid.uuid4(),
                           payment_type=row[2],
@@ -202,9 +173,5 @@ with open('../csv/olist_order_payments_dataset.csv') as csvPay:
 
         #if len(sales) > 0:
         #    print("%d %d" % (len(sales), int(row[0], 16)))
-
-        cont += 1
-        if cont >= 100:
-            break
 
 print("Acabei de inserir no payment e alterar o Sale")
