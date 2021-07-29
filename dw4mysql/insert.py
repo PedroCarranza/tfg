@@ -1,17 +1,15 @@
 import csv
 import uuid
 from datetime import datetime
-from Sale import Sale
 from Product import Product
 from Customer import Customer
 from Seller import Seller
 from Review import Review
 from OrderSales import OrderSales
 from Payment import Payment
+from Sale import Sale
 from BaseModel import *
 from peewee import *
-
-create_tables()
 
 with open('../csv/olist_products_dataset.csv') as csvProd:
     readerProd = csv.reader(csvProd, delimiter=',', quotechar='"')
@@ -19,7 +17,7 @@ with open('../csv/olist_products_dataset.csv') as csvProd:
     readerProd.next()
 
     for row in readerProd:
-        product = Product(product_id=uuid.uuid4(),
+        product = Product.create(product_id=uuid.uuid4(),
                             id=int(row[0], 16),
                             category_name=row[1],
                             name_length=(int(row[2]) if row[2] != '' else None),
@@ -40,7 +38,7 @@ with open('../csv/product_category_name_translation.csv') as csvTrans:
     readerTrans.next()
 
     for row in readerTrans:
-        for product in Product.objects.filter(category_name=row[0]).allow_filtering():
+        for product in Product.select().where(Product.category_name == row[0]):
             product.categoryNameEnglish = row[1]
             product.update()
 
@@ -52,7 +50,7 @@ with open('../csv/olist_customers_dataset.csv') as csvCus:
     readerCus.next()
 
     for row in readerCus:
-        customer = Customer(unique_id=int(row[1], 16),
+        customer = Customer.create(unique_id=int(row[1], 16),
                             zip_code_prefix=(int(row[2]) if row[2] != '' else None),
                             city=row[3],
                             state=row[4])
@@ -66,7 +64,7 @@ with open('../csv/olist_sellers_dataset.csv') as csvSel:
     readerSel.next()
 
     for row in readerSel:
-        seller = Seller(id=int(row[0], 16),
+        seller = Seller.create(id=int(row[0], 16),
                         zip_code_prefix=(int(row[1]) if row[1] != '' else None),
                         city=row[2],
                         state=row[3])
@@ -80,7 +78,7 @@ with open('../csv/olist_order_items_dataset.csv') as csvItens:
     readerItem.next()
 
     for row in readerItem:
-        sale = Sale(id=uuid.uuid4(),
+        sale = Sale.create(id=uuid.uuid4(),
                     price=float(row[5]) if row[5] != '' else None,
                     freight_value=float(row[6]) if row[6] != '' else None,
                     shipping_limit_date=datetime.strptime(row[4], "%Y-%m-%d %H:%M:%S"),
@@ -104,7 +102,7 @@ with open('../csv/olist_orders_dataset.csv') as csvOrd:
         delivered_customer = datetime.strptime(row[6], "%Y-%m-%d %H:%M:%S") if row[6] != '' else None
         estimated_delivery = datetime.strptime(row[7], "%Y-%m-%d %H:%M:%S") if row[7] != '' else None
 
-        sales = Sale.objects.filter(order_id=int(row[0], 16)).allow_filtering()
+        sales = Sale.select().where(Sale.order_id == int(row[0], 16))
 
         for sale in sales:
             sale.customer_id = int(row[1], 16)
@@ -119,10 +117,7 @@ with open('../csv/olist_orders_dataset.csv') as csvOrd:
                 sale.hours_at_carrier = None
             sale.update()
 
-        #if len(sales) > 0:
-        #    print("%d %d" % (len(sales), int(row[0], 16)))
-
-        orderSales = OrderSales(id=int(row[0], 16),
+        orderSales = OrderSales.create(id=int(row[0], 16),
                         status=row[2],
                         purchase=purchase,
                         approved_at=approved_at,
@@ -142,7 +137,7 @@ with open('../csv/olist_order_reviews_dataset.csv') as csvRev:
     readerRev.next()
 
     for row in readerRev:
-        review = Review(id=int(row[0], 16),
+        review = Review.create(id=int(row[0], 16),
                         score=(int(row[2]) if row[2] != '' else None),
                         comment_title=row[3],
                         comment_message=row[4],
@@ -150,7 +145,7 @@ with open('../csv/olist_order_reviews_dataset.csv') as csvRev:
                         answer_timestamp=row[6])
         review.save()
 
-        sales = Sale.objects.filter(order_id=int(row[1], 16)).allow_filtering()
+        sales = Sale.select().where(Sale.order_id == int(row[1], 16))
 
         for sale in sales:
             sale.review_id = review.id
@@ -164,19 +159,16 @@ with open('../csv/olist_order_payments_dataset.csv') as csvPay:
     readerPay.next()
 
     for row in readerPay:
-        payment = Payment(id=uuid.uuid4(),
+        payment = Payment.create(id=uuid.uuid4(),
                           payment_type=row[2],
                           payment_installments=(int(row[3]) if row[3] != '' else None),
                           payment_value=(float(row[4]) if row[4] != '' else None))
         payment.save()
 
-        sales = Sale.objects.filter(order_id=int(row[0], 16)).allow_filtering()
+        sales = Sale.select().where(Sale.order_id == int(row[0], 16))
 
         for sale in sales:
             sale.payment_id = payment.id
             sale.update()
-
-        #if len(sales) > 0:
-        #    print("%d %d" % (len(sales), int(row[0], 16)))
 
 print("Acabei de inserir no payment e alterar o Sale")
