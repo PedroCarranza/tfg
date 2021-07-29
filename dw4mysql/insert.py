@@ -11,6 +11,7 @@ from Sale import Sale
 from BaseModel import *
 from peewee import *
 
+"""
 with open('../csv/olist_products_dataset.csv') as csvProd:
     readerProd = csv.reader(csvProd, delimiter=',', quotechar='"')
 
@@ -31,6 +32,7 @@ with open('../csv/olist_products_dataset.csv') as csvProd:
         product.save()
 
 print("Acabei de inserir no product")
+"""
 
 with open('../csv/product_category_name_translation.csv') as csvTrans:
     readerTrans = csv.reader(csvTrans, delimiter=',', quotechar='"')
@@ -38,6 +40,7 @@ with open('../csv/product_category_name_translation.csv') as csvTrans:
     readerTrans.next()
 
     for row in readerTrans:
+        print(Product.select().where(Product.category_name == row[0]))
         for product in Product.select().where(Product.category_name == row[0]):
             product.categoryNameEnglish = row[1]
             product.update()
