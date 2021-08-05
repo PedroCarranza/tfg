@@ -72,7 +72,7 @@ with open('../csv/olist_sellers_dataset.csv') as csvSel:
         seller.save()
 
 print("Acabei de inserir no seller")
-"""
+
 
 with open('../csv/olist_orders_dataset.csv') as csvOrd:
     readerOder = csv.reader(csvOrd, delimiter=',', quotechar='"')
@@ -91,6 +91,8 @@ with open('../csv/olist_orders_dataset.csv') as csvOrd:
         orderSales.save()
 
 print("Acabei de inserir no OrderSale")
+"""
+
 
 with open('../csv/olist_order_items_dataset.csv') as csvItens:
     readerItem = csv.reader(csvItens, delimiter=',', quotechar='"')
