@@ -3,7 +3,7 @@ from dw4mysql.BaseModel import BaseModel
 
 
 class Product(BaseModel):
-    id = UUIDField()
+    id = UUIDField(primary_key=True)
     category_name = CharField()
     name_length = IntegerField(null=True)
     description_length = IntegerField(null=True)
@@ -16,7 +16,6 @@ class Product(BaseModel):
 
     class Meta:
         db_table = 'product'
-        primary_key = CompositeKey('id', 'category_name')
 
 
 Product.create_table()
