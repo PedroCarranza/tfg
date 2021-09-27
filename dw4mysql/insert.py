@@ -163,7 +163,7 @@ with open('../csv/olist_order_reviews_dataset.csv') as csvRev:
 
         for sale in sales:
             sale.review_id = review.id
-            sale.update()
+            sale.save()
 
 print("Acabei de inserir no review e alterar o Sale")
 
@@ -184,6 +184,6 @@ with open('../csv/olist_order_payments_dataset.csv') as csvPay:
 
         for sale in sales:
             sale.payment_id = payment.id
-            sale.update()
+            sale.save()
 
 print("Acabei de inserir no payment e alterar o Sale")
