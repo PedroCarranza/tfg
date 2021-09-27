@@ -133,7 +133,7 @@ dmypy.json
 .autosave
 
 # Word
-.docx
+*.docx
 
 #Excel
-.xlsx
+*.xlsx
