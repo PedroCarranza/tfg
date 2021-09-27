@@ -131,6 +131,7 @@ dmypy.json
 
 # Dia
 .autosave
+.dia~
 
 # Word
 *.docx
