@@ -18,7 +18,6 @@ from Review import Review
 from OrderSales import OrderSales
 from Payment import Payment
 
-"""
 with open('../csv/olist_products_dataset.csv') as csvProd:
     readerProd = csv.reader(csvProd, delimiter=',', quotechar='"')
 
@@ -58,7 +57,7 @@ with open('../csv/olist_customers_dataset.csv') as csvCus:
     readerCus.next()
 
     for row in readerCus:
-        customer = Customer(unique_id=int(row[1], 16),
+        customer = Customer(id=int(row[1], 16),
                             zip_code_prefix=(int(row[2]) if row[2] != '' else None),
                             city=row[3],
                             state=row[4])
@@ -96,7 +95,7 @@ with open('../csv/olist_order_items_dataset.csv') as csvItens:
         sale.save()
 
 print("Acabei de inserir no sale")
-"""
+
 
 with open('../csv/olist_orders_dataset.csv') as csvOrd:
     readerOder = csv.reader(csvOrd, delimiter=',', quotechar='"')

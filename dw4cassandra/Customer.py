@@ -8,7 +8,7 @@ class Customer(Model):
     __table_name__ = 'costumer'
     __connection__ = 'cluster1'
     type_name = 'costumer'
-    unique_id = columns.VarInt(primary_key=True)
+    id = columns.VarInt(primary_key=True)
     zip_code_prefix = columns.Integer()
     city = columns.Text()
     state = columns.Text()

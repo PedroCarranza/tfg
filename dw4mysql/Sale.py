@@ -19,7 +19,7 @@ class Sale(BaseModel):
     customer_id = ForeignKeyField(Customer, to_field='unique_id', backref='sales', null=True)
     seller_id = ForeignKeyField(Seller, to_field='id', backref='sales', null=True)
     review_id = ForeignKeyField(Review, to_field='id', backref='sales', null=True)
-    order_id = ForeignKeyField(OrderSales, to_field='id', backref='sales', null=True)
+    order_sales_id = ForeignKeyField(OrderSales, to_field='id', backref='sales', null=True)
     product_id = ForeignKeyField(Product, to_field='id', backref='sales', null=True)
     payment_id = ForeignKeyField(Payment, to_field='id', backref='sales', null=True)
 

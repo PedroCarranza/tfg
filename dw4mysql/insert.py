@@ -52,7 +52,7 @@ with open('../csv/olist_customers_dataset.csv') as csvCus:
     readerCus.next()
 
     for row in readerCus:
-        customer = Customer.create(unique_id=uuid.UUID(row[0]),
+        customer = Customer.create(id=uuid.UUID(row[0]),
                             zip_code_prefix=(int(row[2]) if row[2] != '' else None),
                             city=row[3],
                             state=row[4])
