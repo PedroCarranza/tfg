@@ -105,7 +105,7 @@ with open('../csv/olist_order_items_dataset.csv') as csvItens:
                     price=float(row[5]) if row[5] != '' else None,
                     freight_value=float(row[6]) if row[6] != '' else None,
                     shipping_limit_date=datetime.strptime(row[4], "%Y-%m-%d %H:%M:%S"),
-                    order_id=row[0],
+                    order_sales_id=row[0],
                     seller_id=row[3],
                     product_id=row[2])
         sale.save()
@@ -126,7 +126,7 @@ with open('../csv/olist_orders_dataset.csv') as csvOrd:
         delivered_customer = datetime.strptime(row[6], "%Y-%m-%d %H:%M:%S") if row[6] != '' else None
         estimated_delivery = datetime.strptime(row[7], "%Y-%m-%d %H:%M:%S") if row[7] != '' else None
 
-        sales = Sale.select().where(Sale.order_id == row[0])
+        sales = Sale.select().where(Sale.order_sales_id == row[0])
 
         for sale in sales:
             sale.customer_id = row[1]
@@ -159,7 +159,7 @@ with open('../csv/olist_order_reviews_dataset.csv') as csvRev:
                                 answer_timestamp=row[6])
         review.save()
 
-        sales = Sale.select().where(Sale.order_id == row[1])
+        sales = Sale.select().where(Sale.order_sales_id == row[1])
 
         for sale in sales:
             sale.review_id = review.id
@@ -180,7 +180,7 @@ with open('../csv/olist_order_payments_dataset.csv') as csvPay:
                           payment_value=(float(row[4]) if row[4] != '' else None))
         payment.save()
 
-        sales = Sale.select().where(Sale.order_id == row[0])
+        sales = Sale.select().where(Sale.order_sales_id == row[0])
 
         for sale in sales:
             sale.payment_id = payment.id

@@ -17,7 +17,7 @@ class Sale(Model):
     customer_id = columns.VarInt()
     seller_id = columns.VarInt()
     review_id = columns.VarInt()
-    order_id = columns.VarInt()
+    order_sales_id = columns.VarInt()
     product_id = columns.VarInt()
     payment_id = columns.UUID()
 

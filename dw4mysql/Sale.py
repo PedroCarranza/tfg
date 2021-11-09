@@ -16,7 +16,7 @@ class Sale(BaseModel):
     hours_at_seller = IntegerField(null=True)
     hours_at_carrier = IntegerField(null=True)
     shipping_limit_date = DateTimeField(null=False)
-    customer_id = ForeignKeyField(Customer, to_field='unique_id', backref='sales', null=True)
+    customer_id = ForeignKeyField(Customer, to_field='id', backref='sales', null=True)
     seller_id = ForeignKeyField(Seller, to_field='id', backref='sales', null=True)
     review_id = ForeignKeyField(Review, to_field='id', backref='sales', null=True)
     order_sales_id = ForeignKeyField(OrderSales, to_field='id', backref='sales', null=True)

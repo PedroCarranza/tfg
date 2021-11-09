@@ -110,7 +110,7 @@ with open('../csv/olist_orders_dataset.csv') as csvOrd:
         delivered_customer = datetime.strptime(row[6], "%Y-%m-%d %H:%M:%S") if row[6] != '' else None
         estimated_delivery = datetime.strptime(row[7], "%Y-%m-%d %H:%M:%S") if row[7] != '' else None
 
-        sales = Sale.objects.filter(order_id=int(row[0], 16)).allow_filtering()
+        sales = Sale.objects.filter(order_sales_id=int(row[0], 16)).allow_filtering()
 
         for sale in sales:
             sale.customer_id = int(row[1], 16)
