@@ -4,10 +4,10 @@ from cassandra.cqlengine import management
 
 
 class Product(Model):
-    __keyspace__ = 'olist'
+    __keyspace__ = 'dw4cassandra'
     __table_name__ = 'product'
     __connection__ = 'cluster1'
-    id = columns.VarInt(primary_key=True)
+    id = columns.UUID(primary_key=True)
     category_name = columns.Text(primary_key=True)
     name_length = columns.Integer()
     description_length = columns.Integer()

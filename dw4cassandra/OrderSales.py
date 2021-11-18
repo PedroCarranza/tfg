@@ -4,10 +4,10 @@ from cassandra.cqlengine.management import sync_table
 
 
 class OrderSales(Model):
-    __keyspace__ = 'olist'
-    __table_name__ = 'ordersales'
+    __keyspace__ = 'dw4cassandra'
+    __table_name__ = 'order_sales'
     __connection__ = 'cluster1'
-    id = columns.VarInt(primary_key=True)
+    id = columns.UUID(primary_key=True)
     status = columns.Text()
     purchase = columns.DateTime()
     approved_at = columns.DateTime()

@@ -4,7 +4,7 @@ from cassandra.cqlengine.management import sync_table
 
 
 class Payment(Model):
-    __keyspace__ = 'olist'
+    __keyspace__ = 'dw4cassandra'
     __table_name__ = 'payment'
     __connection__ = 'cluster1'
     id = columns.UUID(primary_key=True)
