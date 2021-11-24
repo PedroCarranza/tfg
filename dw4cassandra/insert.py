@@ -35,7 +35,6 @@ with open('../csv/olist_products_dataset.csv') as csvProd:
                           width_cm=(int(row[8]) if row[8] != '' else None),
                           category_name_english='')
         product.save()
-
 print("Acabei de inserir no product")
 
 with open('../csv/product_category_name_translation.csv') as csvTrans:
@@ -47,7 +46,6 @@ with open('../csv/product_category_name_translation.csv') as csvTrans:
         for product in Product.objects.filter(category_name=row[0]).allow_filtering():
             product.categoryNameEnglish = row[1]
             product.update()
-
 print("Acabei de alterar o product")
 
 with open('../csv/olist_customers_dataset.csv') as csvCus:
@@ -61,7 +59,6 @@ with open('../csv/olist_customers_dataset.csv') as csvCus:
                             city=row[3],
                             state=row[4])
         customer.save()
-
 print("Acabei de inserir no customer")
 
 with open('../csv/olist_sellers_dataset.csv') as csvSel:
@@ -75,9 +72,7 @@ with open('../csv/olist_sellers_dataset.csv') as csvSel:
                         city=row[2],
                         state=row[3])
         seller.save()
-
 print("Acabei de inserir no seller")
-
 
 with open('../csv/olist_order_items_dataset.csv') as csvItens:
     readerItem = csv.reader(csvItens, delimiter=',', quotechar='"')
@@ -93,9 +88,7 @@ with open('../csv/olist_order_items_dataset.csv') as csvItens:
                     seller_id=row[3],
                     product_id=row[2])
         sale.save()
-
 print("Acabei de inserir no sale")
-
 
 with open('../csv/olist_orders_dataset.csv') as csvOrd:
     readerOder = csv.reader(csvOrd, delimiter=',', quotechar='"')
@@ -130,9 +123,7 @@ with open('../csv/olist_orders_dataset.csv') as csvOrd:
                                 delivered_customer=delivered_customer,
                                 estimated_delivery=estimated_delivery)
         orderSales.save()
-
 print("Acabei de inserir no OrderSale e alterar o Sale")
-
 
 with open('../csv/olist_order_reviews_dataset.csv') as csvRev:
     readerRev = csv.reader(csvRev, delimiter=',', quotechar='"')
@@ -154,10 +145,7 @@ with open('../csv/olist_order_reviews_dataset.csv') as csvRev:
         for sale in sales:
             sale.review_id = review.id
             sale.update()
-
-
 print("Acabei de inserir no review e alterar o Sale")
-
 
 with open('../csv/olist_order_payments_dataset.csv') as csvPay:
     readerPay = csv.reader(csvPay, delimiter=',', quotechar='"')
@@ -176,5 +164,4 @@ with open('../csv/olist_order_payments_dataset.csv') as csvPay:
         for sale in sales:
             sale.payment_id = payment.id
             sale.update()
-
 print("Acabei de inserir no payment e alterar o Sale")

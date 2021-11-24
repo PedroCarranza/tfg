@@ -1,5 +1,4 @@
 import time
-
 import psutil as ps
 
 
@@ -17,15 +16,21 @@ class ComputerUsage:
 
     def start(self):
         self.keep_measuring = True
-        self.cpu_monitored = [0]
-        self.ram_monitored = [0]
-        self.swap_monitored = [0]
+        self.cpu_monitored = []
+        self.ram_monitored = []
+        self.swap_monitored = []
 
-        time.sleep(10)
+        cpu_measured = ram_measured = swap_measured = 0
+        quantity = self.quantity_count
+        while quantity > 0:
+            cpu_measured += ps.cpu_percent(interval=self.time_interval)
+            ram_measured += ps.virtual_memory().used
+            swap_measured += ps.swap_memory().used
+            quantity -= 1
 
-        self.cpu_base = ps.cpu_percent(interval=self.time_interval)
-        self.ram_base = ps.virtual_memory().used
-        self.swap_base = ps.swap_memory().used
+        self.cpu_base = cpu_measured/self.quantity_count
+        self.ram_base = ram_measured/self.quantity_count
+        self.swap_base = swap_measured/self.quantity_count
 
     def run(self):
         while self.keep_measuring:
@@ -36,10 +41,6 @@ class ComputerUsage:
             self.cpu_monitored.append(round(cpu_mes - self.cpu_base, 4))
             self.ram_monitored.append(round(ram_mes - self.ram_base, 4))
             self.swap_monitored.append(round(swap_mes - self.swap_base, 4))
-
-            self.cpu_base = cpu_mes
-            self.ram_base = ram_mes
-            self.swap_base = swap_mes
 
         return self.cpu_monitored, self.ram_monitored, self.swap_monitored
 
